@@ -8,6 +8,9 @@ export { LimitOrderContract } from './LimitOrderContract.js';
 export { CrossChainHTLCContract } from './CrossChainHTLCContract.js';
 export type { HTLCParams } from './CrossChainHTLCContract.js';
 
+export { XmrAdaptorSwapContract } from './XmrAdaptorSwapContract.js';
+export type { XmrAdaptorSwapParams } from './XmrAdaptorSwapContract.js';
+
 // Solver — Fill & Cancel logic for third-party solver bots
 export { DutchAuctionSolver } from './DutchAuctionSolver.js';
 export type { DutchAuctionFillOptions, DutchAuctionCancelOptions } from './DutchAuctionSolver.js';
