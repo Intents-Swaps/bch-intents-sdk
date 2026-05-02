@@ -55,7 +55,7 @@ var sdk_contracts_1 = require("@bch-intents/sdk-contracts");
 var cashscript_1 = require("cashscript");
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var provider, dutchParams, dutchContract, currentPrice, contractUtxos, solverWif, solverAddress, solverUtxos, result, e_1, limitParams, limitContract, limitUtxos;
+        var provider, dutchParams, dutchContract, currentPrice, contractUtxos, TestNetWallet, solverWif, wallet, solverAddress, solverUtxos, result, e_1, limitParams, limitContract, limitUtxos;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -84,16 +84,22 @@ function main() {
                     if (!(contractUtxos.length === 0)) return [3 /*break*/, 2];
                     console.log('  ⚠️  No funded UTXOs found — maker has not funded the contract yet.');
                     console.log('  Skipping fill (this is expected in a cold example).\n');
-                    return [3 /*break*/, 7];
-                case 2:
-                    solverWif = 'YOUR_SOLVER_WIF_HERE';
-                    solverAddress = 'bchtest:qq...';
-                    return [4 /*yield*/, provider.getUtxos(solverAddress)];
+                    return [3 /*break*/, 9];
+                case 2: return [4 /*yield*/, Promise.resolve().then(function () { return require('mainnet-js'); })];
                 case 3:
-                    solverUtxos = _a.sent();
-                    _a.label = 4;
+                    TestNetWallet = (_a.sent()).TestNetWallet;
+                    solverWif = 'cN4nUwGunYVjG2mKd1ERPXtKFbcu4P9gGBL6DJYMPSVrzqyk1VFv';
+                    return [4 /*yield*/, TestNetWallet.fromWIF(solverWif)];
                 case 4:
-                    _a.trys.push([4, 6, , 7]);
+                    wallet = _a.sent();
+                    solverAddress = wallet.address || wallet.cashaddr;
+                    console.log("  Solver Address: ".concat(solverAddress));
+                    return [4 /*yield*/, provider.getUtxos(solverAddress)];
+                case 5:
+                    solverUtxos = _a.sent();
+                    _a.label = 6;
+                case 6:
+                    _a.trys.push([6, 8, , 9]);
                     return [4 /*yield*/, sdk_contracts_1.DutchAuctionSolver.fill({
                             contract: dutchContract,
                             contractUtxo: contractUtxos[0],
@@ -101,16 +107,16 @@ function main() {
                             solverWif: solverWif,
                             solverUtxos: solverUtxos,
                         })];
-                case 5:
+                case 7:
                     result = _a.sent();
                     console.log("  \u2705 Filled! TXID: ".concat(result.txid));
                     console.log("  Price Paid: ".concat(result.pricePaid, " sats"));
-                    return [3 /*break*/, 7];
-                case 6:
+                    return [3 /*break*/, 9];
+                case 8:
                     e_1 = _a.sent();
                     console.error("  \u274C Fill failed: ".concat(e_1.message));
-                    return [3 /*break*/, 7];
-                case 7:
+                    return [3 /*break*/, 9];
+                case 9:
                     // =========================================================================
                     // Example 2: Fill a Limit Order
                     // =========================================================================
@@ -125,7 +131,7 @@ function main() {
                     limitContract = sdk_contracts_1.LimitOrderContract.compile(limitParams, provider);
                     console.log("  Contract: ".concat(limitContract.address));
                     return [4 /*yield*/, provider.getUtxos(limitContract.tokenAddress)];
-                case 8:
+                case 10:
                     limitUtxos = _a.sent();
                     if (limitUtxos.length === 0) {
                         console.log('  ⚠️  No funded UTXOs — skipping fill.\n');

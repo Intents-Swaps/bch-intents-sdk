@@ -18,8 +18,8 @@
         "test": "node --import tsx --test src/**/*.test.ts"
     },
     "dependencies": {
-        "@bch-intents/sdk-common": "*",
-        "@bch-intents/sdk-contracts": "*",
+        "@bch-intents/sdk-common": "workspace:*",
+        "@bch-intents/sdk-contracts": "workspace:*",
         "cashscript": "^0.12.0"
     },
     "devDependencies": {

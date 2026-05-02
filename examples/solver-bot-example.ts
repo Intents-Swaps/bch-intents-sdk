@@ -59,8 +59,12 @@ async function main() {
         console.log('  Skipping fill (this is expected in a cold example).\n');
     } else {
         // 4. Get solver's UTXOs for payment
-        const solverWif = 'YOUR_SOLVER_WIF_HERE'; // Replace with actual WIF
-        const solverAddress = 'bchtest:qq...'; // Replace
+        const { TestNetWallet } = await import('mainnet-js');
+        const solverWif = 'cN4nUwGunYVjG2mKd1ERPXtKFbcu4P9gGBL6DJYMPSVrzqyk1VFv'; // Test key
+        const wallet = await TestNetWallet.fromWIF(solverWif);
+        const solverAddress = (wallet as any).address || (wallet as any).cashaddr;
+        console.log(`  Solver Address: ${solverAddress}`);
+
         const solverUtxos = await provider.getUtxos(solverAddress);
 
         // 5. Fill the auction!

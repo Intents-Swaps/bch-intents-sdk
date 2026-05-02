@@ -136,6 +136,32 @@ export interface ScannedUtxo {
     };
 }
 
+// --- Nostr Integration Types ---
+
+/** Privacy mode for intent broadcasting */
+export type PrivacyMode = 'public' | 'private';
+
+/** Standardized schema for an intent broadcasted as a Nostr Event */
+export interface NostrIntentEvent {
+    /** The raw Nostr event ID */
+    eventId: string;
+    /** The serialized core Intent object */
+    intent: Intent;
+    /** 'public' (NIP-01) or 'private' (NIP-44/59) */
+    mode: PrivacyMode;
+}
+
+/** Nostr Relay Configuration */
+export interface NostrConfig {
+    /** Array of websocket URLs for Nostr relays to connect to */
+    relays: string[];
+    /** 
+     * Optional explicit private key for signing (hex string).
+     * If omitted, the SDK will automatically generate an ephemeral keypair in the background.
+     */
+    privateKeyHex?: string;
+}
+
 // --- SDK Config ---
 
 /** Configuration for the BCH Intents SDK client */

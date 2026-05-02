@@ -13,6 +13,9 @@ export type {
     CrossChainParams,
     ScannedUtxo,
     BCHIntentsConfig,
+    PrivacyMode,
+    NostrIntentEvent,
+    NostrConfig,
 } from './types.js';
 
 // Utils

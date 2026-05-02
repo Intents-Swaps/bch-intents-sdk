@@ -15,7 +15,7 @@ export class MainnetJSAdapter implements BCHSigner {
         if ('cashaddr' in this.wallet) {
             return (this.wallet as any).cashaddr;
         }
-        return this.wallet.getDepositAddress();
+        return (this.wallet as any).getDepositAddress();
     }
 
     async getPkh(): Promise<Uint8Array> {
@@ -24,7 +24,7 @@ export class MainnetJSAdapter implements BCHSigner {
     }
 
     async getPublicKey(): Promise<Uint8Array> {
-        return this.wallet.publicKeyCompressed;
+        return (this.wallet as any).publicKeyCompressed as Uint8Array;
     }
 
     async send(toAddress: string, satoshis: bigint, token?: { category: string; amount: bigint }): Promise<string> {

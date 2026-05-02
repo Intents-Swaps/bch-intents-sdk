@@ -16,5 +16,5 @@ export function generateEd25519Keypair() {
  * Hashes an arbitrary payload into a valid scalar on the Ed25519 curve.
  */
 export function hashToEd25519Scalar(data: Uint8Array): bigint {
-    return ed25519.utils.hashToPrivateKey(data);
+    return (ed25519 as any).hashToPrivateKey(data);
 }

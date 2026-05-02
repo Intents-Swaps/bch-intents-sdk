@@ -29,7 +29,7 @@ export class XmrAdaptorSwapContract {
                 params.recipientPkh,
                 params.senderPkh,
                 params.timelock,
-            ], { provider });
+            ], { provider: provider as any });
         } catch (error) {
             throw new CovenantCompilationError('XmrAdaptorSwap', error);
         }

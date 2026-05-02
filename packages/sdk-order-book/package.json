@@ -18,7 +18,9 @@
         "test": "node --import tsx --test src/**/*.test.ts"
     },
     "dependencies": {
-        "@bch-intents/sdk-common": "*"
+        "@bch-intents/sdk-common": "workspace:*",
+        "@noble/ciphers": "^1.1.2",
+        "nostr-tools": "^2.10.4"
     },
     "devDependencies": {
         "tsx": "^4.7.0",

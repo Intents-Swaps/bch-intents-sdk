@@ -4,3 +4,5 @@
 
 export { RelayerClient } from './RelayerClient.js';
 export type { RelayerConfig, IntentFilterParams, IntentQueryResponse } from './RelayerClient.js';
+
+export * from './nostr/index.js';

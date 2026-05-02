@@ -31,7 +31,7 @@ export class CrossChainHTLCContract {
                 params.takerPkh,
                 params.secretHash,
                 params.timelock,
-            ], { provider });
+            ], { provider: provider as any });
         } catch (error) {
             throw new CovenantCompilationError('CrossChainHTLC', error);
         }

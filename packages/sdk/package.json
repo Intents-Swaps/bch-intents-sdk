@@ -17,13 +17,13 @@
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
-        "@bch-intents/sdk-common": "*",
-        "@bch-intents/sdk-contracts": "*",
-        "@bch-intents/sdk-cashtokens": "*",
-        "@bch-intents/sdk-order-book": "*",
-        "@bch-intents/sdk-cross-chain": "*",
-        "@bch-intents/sdk-wallet-adapter": "*",
-        "@bch-intents/sdk-xmr-swap": "*"
+        "@bch-intents/sdk-common": "workspace:*",
+        "@bch-intents/sdk-contracts": "workspace:*",
+        "@bch-intents/sdk-cashtokens": "workspace:*",
+        "@bch-intents/sdk-order-book": "workspace:*",
+        "@bch-intents/sdk-cross-chain": "workspace:*",
+        "@bch-intents/sdk-wallet-adapter": "workspace:*",
+        "@bch-intents/sdk-xmr-swap": "workspace:*"
     },
     "devDependencies": {
         "typescript": "^5.3.3"
