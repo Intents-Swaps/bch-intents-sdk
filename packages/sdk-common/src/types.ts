@@ -55,6 +55,10 @@ export interface Intent {
     startBuyAmount?: string;
     /** Dutch Auction: ending (minimum) buy price */
     endBuyAmount?: string;
+    /** Frontend fee recipient BCH address */
+    feeAddress?: string;
+    /** Absolute fee amount in buyToken units (string for BigInt serialization) */
+    feeAmount?: string;
 }
 
 // --- Swap Parameters ---
@@ -73,6 +77,10 @@ export interface LimitOrderParams {
     buyAmount: bigint;
     /** Unix timestamp (seconds) when the order expires. Default: 1 hour from now */
     expiryTime?: bigint;
+    /** Frontend fee recipient BCH address */
+    feeAddress?: string;
+    /** Absolute fee amount in buyToken units */
+    feeAmount?: bigint;
 }
 
 /** Parameters for creating a Dutch Auction intent */
@@ -91,6 +99,10 @@ export interface DutchAuctionParams {
     endBuyAmount: bigint;
     /** Duration of the auction in seconds. Default: 3600 (1 hour) */
     duration?: bigint;
+    /** Frontend fee recipient BCH address */
+    feeAddress?: string;
+    /** Absolute fee amount in buyToken units */
+    feeAmount?: bigint;
 }
 
 /** Parameters for creating a cross-chain swap */

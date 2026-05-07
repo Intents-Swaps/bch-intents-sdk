@@ -97,3 +97,12 @@ export class MissingParameterError extends IntentError {
         this.paramName = paramName;
     }
 }
+
+/**
+ * Thrown when a calculated fee amount is below the BCH network dust limit.
+ */
+export class FeeAmountBelowDustError extends IntentError {
+    constructor(amount: bigint, limit: bigint = 546n) {
+        super(`Fee amount ${amount} is below the dust limit (${limit} sats)`);
+    }
+}

@@ -44,4 +44,5 @@ export {
     CovenantCompilationError,
     IntentExpiredError,
     MissingParameterError,
+    FeeAmountBelowDustError,
 } from './errors.js';
