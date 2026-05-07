@@ -129,6 +129,12 @@ export class DutchAuctionSolver {
         const solverPkh = hash160(solverPk);
         const solverLockingBytecode = buildP2PKH(solverPkh);
 
+        let feeLockingBytecode: Uint8Array | undefined;
+        if (params.feeAddress) {
+            const feePkh = derivePkhFromAddress(params.feeAddress);
+            feeLockingBytecode = buildP2PKH(feePkh);
+        }
+
         // --- Select solver UTXOs (BCH only, no tokens) ---
         const bchUtxos = solverUtxos.filter(u => !u.token);
         const neededSats = currentPrice + 2000n; // price + fees + dust
@@ -190,12 +196,33 @@ export class DutchAuctionSolver {
             });
         }
 
-        // Output 2: Change back to solver
+        // Output 2 (Optional): Fee output
+        const hasFee = params.feeAddress && params.feeAmount && feeLockingBytecode;
+        if (hasFee) {
+            if (isBuyBCH) {
+                tb.addOutput({ to: feeLockingBytecode!, amount: params.feeAmount! });
+            } else {
+                tb.addOutput({
+                    to: feeLockingBytecode!,
+                    amount: 1000n,
+                    token: {
+                        amount: params.feeAmount!,
+                        category: stripHex(params.buyToken),
+                    },
+                });
+            }
+        }
+
+        // Output 3: Change back to solver
         const totalIn = contractUtxo.satoshis + totalSolverInput;
         const makerOut = isBuyBCH ? currentPrice : 1000n;
         const tokenOut = isSellBCH ? params.sellAmount : 1000n;
-        const fee = 1000n;
-        const change = totalIn - makerOut - tokenOut - fee;
+        let feeOut = 0n;
+        if (hasFee) {
+            feeOut = isBuyBCH ? params.feeAmount! : 1000n;
+        }
+        const minerFee = 1000n;
+        const change = totalIn - makerOut - tokenOut - feeOut - minerFee;
         if (change > 546n) {
             tb.addOutput({ to: solverLockingBytecode, amount: change });
         }
