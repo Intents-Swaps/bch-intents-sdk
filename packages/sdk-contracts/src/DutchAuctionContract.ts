@@ -7,6 +7,7 @@ import {
 } from '@bch-intents/sdk-common';
 
 import artifacts from '../artifacts/DutchAuctionSwap.json' with { type: 'json' };
+import artifactsWithFee from '../artifacts/DutchAuctionSwapWithFee.json' with { type: 'json' };
 
 /**
  * Wrapper for the DutchAuctionSwap.cash covenant.
@@ -31,6 +32,22 @@ export class DutchAuctionContract {
             const duration = params.duration ?? 3600n;
             const startTime = BigInt(Math.floor(Date.now() / 1000));
             const activeProvider = provider ?? new ElectrumNetworkProvider('mainnet');
+
+            if (params.feeAddress && params.feeAmount) {
+                const feePkh = derivePkhFromAddress(params.feeAddress);
+                return new Contract(artifactsWithFee, [
+                    makerPkh,
+                    feePkh,
+                    sellCatLE,
+                    buyCatLE,
+                    params.sellAmount,
+                    params.startBuyAmount,
+                    params.endBuyAmount,
+                    params.feeAmount,
+                    startTime,
+                    duration,
+                ], { provider: activeProvider });
+            }
 
             return new Contract(artifacts, [
                 makerPkh,

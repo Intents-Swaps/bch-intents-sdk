@@ -7,6 +7,7 @@ import {
 } from '@bch-intents/sdk-common';
 
 import artifacts from '../artifacts/LimitOrderSwap.json' with { type: 'json' };
+import artifactsWithFee from '../artifacts/LimitOrderSwapWithFee.json' with { type: 'json' };
 
 /**
  * Wrapper for the LimitOrderSwap.cash covenant.
@@ -30,6 +31,20 @@ export class LimitOrderContract {
             // Default expiry to 1 hour from now
             const expiryTime = params.expiryTime ?? BigInt(Math.floor(Date.now() / 1000) + 3600);
             const activeProvider = provider ?? new ElectrumNetworkProvider('mainnet');
+
+            if (params.feeAddress && params.feeAmount) {
+                const feePkh = derivePkhFromAddress(params.feeAddress);
+                return new Contract(artifactsWithFee, [
+                    makerPkh,
+                    feePkh,
+                    sellCatLE,
+                    buyCatLE,
+                    params.sellAmount,
+                    params.buyAmount,
+                    params.feeAmount,
+                    expiryTime,
+                ], { provider: activeProvider });
+            }
 
             return new Contract(artifacts, [
                 makerPkh,

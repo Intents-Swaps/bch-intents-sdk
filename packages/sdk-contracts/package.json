@@ -1,6 +1,6 @@
 {
     "name": "@bch-intents/sdk-contracts",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Pre-compiled CashScript artifacts and TypeScript compilation wrappers for BCH Intents",
     "type": "module",
     "main": "./dist/index.js",
