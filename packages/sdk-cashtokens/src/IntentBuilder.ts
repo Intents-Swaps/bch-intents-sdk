@@ -11,6 +11,7 @@ import {
  */
 export class LimitOrderBuilder {
     private params: Partial<LimitOrderParams> = {};
+    private feePercentage?: number;
 
     sellToken(token: TokenId | string): this {
         this.params.sellToken = token instanceof TokenId ? token.category : token;
@@ -42,12 +43,27 @@ export class LimitOrderBuilder {
         return this;
     }
 
+    withFrontendFee(percentage: number, feeAddress: string): this {
+        if (percentage <= 0 || percentage >= 1) {
+            throw new Error('Fee percentage must be between 0 and 1 (e.g. 0.005 for 0.5%)');
+        }
+        this.feePercentage = percentage;
+        this.params.feeAddress = feeAddress;
+        return this;
+    }
+
     build(): LimitOrderParams {
         if (!this.params.makerAddress) throw new MissingParameterError('makerAddress');
         if (this.params.sellToken === undefined) throw new MissingParameterError('sellToken');
         if (this.params.buyToken === undefined) throw new MissingParameterError('buyToken');
         if (this.params.sellAmount === undefined) throw new MissingParameterError('sellAmount');
         if (this.params.buyAmount === undefined) throw new MissingParameterError('buyAmount');
+
+        if (this.feePercentage && this.params.buyAmount && this.params.feeAddress) {
+            let computed = BigInt(Math.ceil(Number(this.params.buyAmount) * this.feePercentage));
+            if (computed < 546n) computed = 546n; // Auto-clamp to dust limit
+            this.params.feeAmount = computed;
+        }
 
         return this.params as LimitOrderParams;
     }
@@ -58,6 +74,7 @@ export class LimitOrderBuilder {
  */
 export class DutchAuctionBuilder {
     private params: Partial<DutchAuctionParams> = {};
+    private feePercentage?: number;
 
     sellToken(token: TokenId | string): this {
         this.params.sellToken = token instanceof TokenId ? token.category : token;
@@ -89,6 +106,15 @@ export class DutchAuctionBuilder {
         return this;
     }
 
+    withFrontendFee(percentage: number, feeAddress: string): this {
+        if (percentage <= 0 || percentage >= 1) {
+            throw new Error('Fee percentage must be between 0 and 1 (e.g. 0.005 for 0.5%)');
+        }
+        this.feePercentage = percentage;
+        this.params.feeAddress = feeAddress;
+        return this;
+    }
+
     makerAddress(address: string): this {
         this.params.makerAddress = address;
         return this;
@@ -101,6 +127,12 @@ export class DutchAuctionBuilder {
         if (this.params.sellAmount === undefined) throw new MissingParameterError('sellAmount');
         if (this.params.startBuyAmount === undefined) throw new MissingParameterError('startBuyAmount');
         if (this.params.endBuyAmount === undefined) throw new MissingParameterError('endBuyAmount');
+
+        if (this.feePercentage && this.params.endBuyAmount && this.params.feeAddress) {
+            let computed = BigInt(Math.ceil(Number(this.params.endBuyAmount) * this.feePercentage));
+            if (computed < 546n) computed = 546n; // Auto-clamp to dust limit
+            this.params.feeAmount = computed;
+        }
 
         return this.params as DutchAuctionParams;
     }
