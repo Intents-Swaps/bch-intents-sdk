@@ -1,6 +1,6 @@
 import { TestNetWallet } from 'mainnet-js';
 import {
-    RelayerClient,
+    NostrRelayerClient,
     MainnetJSAdapter,
     IntentBuilder,
     TokenId,
@@ -14,10 +14,9 @@ async function runE2E() {
     const address = await adapter.getAddress();
 
     console.log(`[E2E] Maker Wallet Ready: ${address}`);
-    console.log('[E2E] Connecting to local RelayerClient...');
+    console.log('[E2E] Connecting to Nostr Relay Network...');
 
-    // Assumes relayer is running locally on :3000
-    const relayer = new RelayerClient({ network: 'mainnet' });
+    const relayer = new NostrRelayerClient();
 
     console.log('[E2E] Constructing Limit Order...');
     // Create a mock intent for testing
@@ -39,25 +38,20 @@ async function runE2E() {
         2));
 
     try {
-        console.log('[E2E] Submitting to Relayer...');
-        const response = await relayer.createLimitOrder(intentParams);
-        console.log(`[E2E] Success! Relayer returned Intent ID: ${response.intentId}`);
-        console.log(`[E2E] Covenant Address to fund: ${response.contractAddress}`);
+        console.log('[E2E] Submitting to Nostr Pool...');
+        await relayer.publishIntent(intentParams, 'LIMIT_ORDER');
+        console.log(`[E2E] Success! Intent broadcasted to Nostr relays.`);
 
         console.log('[E2E] Connecting to WebSocket for fill notifications...');
-        relayer.listen((data: any) => {
-            console.log(`[E2E] \u26A1 NOTIFICATION: Intent ${data.intentId} has been filled!`);
-            console.log(`[E2E] TxId: ${data.txid}`);
+        relayer.subscribe((event: any) => {
+            console.log(`[E2E] \u26A1 NOTIFICATION: Intent picked up by solver!`);
+            console.log(`[E2E] Event:`, event);
         });
 
     } catch (error: any) {
-        if (error.name === 'RelayerUnreachableError') {
-            console.log('\n[E2E WARNING] Relayer is offline! E2E gracefully handled the disconnect.');
-            console.log('[E2E] To run full end-to-end, start the relayer process first (`npm run dev` in cashtoken-relayer)');
-        } else {
-            console.error('[E2E ERORR]', error);
-        }
+        console.error('[E2E ERROR]', error);
     }
+
 }
 
 runE2E().catch(console.error);
