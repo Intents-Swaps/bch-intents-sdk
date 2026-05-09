@@ -4,3 +4,4 @@ dist/
 .env
 .agent/
 docs/
+packages/sdk-telegram-bot/
